@@ -35,13 +35,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session
     },
-    async authorized({ auth, request }) {
-      if (auth?.user) {
-        return true
-      } else {
-        return false
-      }
-    },
   },
   pages: {
     signIn: '/login',
