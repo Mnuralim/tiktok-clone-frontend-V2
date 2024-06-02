@@ -1,12 +1,12 @@
 'use server'
 
-const API_URL = process.env.API_URL as string
+const API_URL = process.env.API_URL
 
 export const loginGoogle = async (tokenId: string) => {
-  const response = await fetch(`${API_URL}/auths/login-google`, {
+  const response = await fetch(`${API_URL}/auths/login-google/?tokenId=${tokenId}`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${tokenId}`,
+      'Content-Type': 'application/json',
     },
   })
 
