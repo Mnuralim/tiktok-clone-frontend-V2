@@ -4,12 +4,12 @@ import { auth } from './auth'
 export async function middleware(req: NextRequest) {
   const session = await auth()
 
-  if (!session && req.nextUrl.pathname !== '/login') {
+  if (!session?.user.accessToken && req.nextUrl.pathname !== '/login') {
     const newUrl = new URL('/login', req.nextUrl.origin)
     return NextResponse.redirect(newUrl)
   }
 
-  if (session && req.nextUrl.pathname === '/login') {
+  if (session?.user.accessToken && req.nextUrl.pathname === '/login') {
     const newUrl = new URL('/', req.nextUrl.origin)
     return NextResponse.redirect(newUrl)
   }
