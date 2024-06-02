@@ -7,29 +7,19 @@ interface IPost {
   thumbnailUrl: string
   user: Iuser
   likes: ILike[]
-  comments: {
-    id: string
+  savedBy: {
+    userId: string
   }[]
-  createdAt: Date
-  updatedAt: Date
+  _count: { likes: number; comments: number; savedBy: number }
+  createdAt: string
+  updatedAt: string
 }
 
 interface ILike {
   id: string
   userId: string
   videoId: string
-  createdAt: Date
-}
-
-interface Iuser {
-  id: 'clwqces2i0000ncn77qlxxc2k'
-  username: 'cryptomism33'
-  email: 'cryptomism33@gmail.com'
-  name: null
-  profilePicUrl: 'https://lh3.googleusercontent.com/a/ACg8ocJI1C1NnbKegUyD1pSWZpmtdTKN9_tN_PUWD7qF-eLNV545ew=s96-c'
-  bio: null
-  createdAt: '2024-05-28T11:57:26.298Z'
-  updatedAt: '2024-05-28T11:57:26.298Z'
+  createdAt: string
 }
 
 interface IComment {
@@ -38,5 +28,29 @@ interface IComment {
   user: Iuser
   videoId: string
   commentText: string
-  createdAt: Date
+  createdAt: string
+}
+
+interface Iuser {
+  id: string
+  username: string
+  email: string
+  name: string | null
+  profilePicUrl: string
+  bio: string | null
+  followers: {
+    followerId: string
+  }[]
+  following: {
+    followingId: string
+  }[]
+  videos: IPost[]
+  likes: {
+    video: IPost
+  }[]
+  savedVideos: {
+    video: IPost
+  }[]
+  createdAt: string
+  updatedAt: string
 }

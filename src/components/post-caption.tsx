@@ -19,7 +19,7 @@ const PostCaption = ({ post, isVideoPlaying }: Props) => {
           <p className="text-[10px] mr-1">112 people posted about this place</p>
         </div>
       </div>
-      <Link href={`/${post.user.username}`} className="font-semibold text-[17px]">
+      <Link href={`/user/${post.user.username}`} className="font-semibold text-[17px]">
         {post.user.username}
       </Link>
       <p className="text-sm max-w-[80%]">{post.caption}</p>

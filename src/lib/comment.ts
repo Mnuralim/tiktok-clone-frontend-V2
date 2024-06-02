@@ -9,10 +9,12 @@ export const getAllPostComments = async (postId: string, accessToken: string) =>
       },
     })
     const data = await response.json()
-    const comments: IComment[] = data.data
-    return comments
+    if (response.ok) {
+      const comments: IComment[] = data.data
+      return comments
+    }
+    return []
   } catch (error) {
-    console.log(error)
     throw new Error('Something wrong')
   }
 }

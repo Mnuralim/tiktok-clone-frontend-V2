@@ -1,11 +1,13 @@
-import { getAllPosts } from '@/lib/post'
-import PostList from './components/post-list'
+import { Suspense } from 'react'
+import HomePage from './components/home-page'
+import Opening from '@/components/opening'
 
 export default async function Home() {
-  const posts = await getAllPosts()
   return (
     <section className="bg-black">
-      <PostList posts={posts} />
+      <Suspense fallback={<Opening />}>
+        <HomePage />
+      </Suspense>
     </section>
   )
 }

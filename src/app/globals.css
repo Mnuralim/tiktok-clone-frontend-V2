@@ -29,6 +29,14 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+#profile::-webkit-scrollbar {
+  display: none;
+}
+
+#setting::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes slide-right {
   0% {
     transform: translateX(-100%);

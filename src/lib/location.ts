@@ -1,5 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_LOCATION_API_URL
-const KEY = process.env.NEXT_PUBLIC_KEY_LOCATION
+const API_URL = process.env.LOCATION_API_URL
+const KEY = process.env.KEY_LOCATION
 
 export const getAllLocation = async () => {
   try {
@@ -9,9 +9,13 @@ export const getAllLocation = async () => {
         key: KEY as string,
       },
     })
+
     const data = await response.json()
-    const location: { city_name: string }[] = data.rajaongkir.results
-    return location
+    if (response.ok) {
+      const location: { city_name: string }[] = data.rajaongkir.results
+      return location
+    }
+    return []
   } catch (error) {
     throw new Error('Something wrong')
   }

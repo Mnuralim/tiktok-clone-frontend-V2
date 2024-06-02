@@ -6,10 +6,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineClose, AiOutlineHeart } from 'react-icons/ai'
 import CommentBar from './comment-bar'
+import { getUserByUsername } from '@/lib/user'
+import CalcTime from './calc-time'
+import { parseToDate } from '@/utils/parse-to-date'
 
 const CommentListWrapper = () => {
   const [comments, setComments] = useState<IComment[]>([])
   const [trigger, setTrigger] = useState<boolean>(false)
+  const [imgUrl, setImgUrl] = useState<string>('')
   const { data: session } = useSession()
   const searchParams = useSearchParams()
   const { back } = useRouter()
@@ -24,14 +28,22 @@ const CommentListWrapper = () => {
     const controller = new AbortController()
     if (showComment && session && session.user && session.user.accessToken) {
       const fetchData = async () => {
-        const data = await getAllPostComments(showComment, session.user.accessToken as string)
-        setComments(data)
+        const [comments, user] = await Promise.all([
+          await getAllPostComments(showComment, session.user.accessToken as string),
+          await getUserByUsername(session.user.username as string, session.user.accessToken),
+        ])
+
+        if (user) {
+          setImgUrl(user.profilePicUrl)
+        }
+        setComments(comments)
       }
+
       fetchData()
     }
 
     return () => controller.abort()
-  }, [showComment, session?.user.accessToken, trigger])
+  }, [showComment, session?.user.accessToken, trigger, session])
 
   useEffect(() => {
     if (scrollTopRef.current) {
@@ -66,14 +78,16 @@ const CommentListWrapper = () => {
                   width={35}
                   height={35}
                   alt="profile"
-                  className="rounded-full object-fill w-[35px] h-[35px]"
+                  className="rounded-full object-cover object-center aspect-square w-[35px] h-[35px]"
                 />
                 <div className="w-full">
                   <h2 className="text-xs font-semibold text-[rgba(22,24,35,0.7)]">{comment.user.username}</h2>
                   <p>{comment.commentText}</p>
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex gap-3 items-center text-[rgba(22,24,35,0.7)]">
-                      <div className="text-xs">{/* <DateConv createdAt={parseToDate(comment.createdAt)} /> */}</div>
+                      <div className="text-xs">
+                        <CalcTime createdAt={parseToDate(comment.createdAt)} />
+                      </div>
                       <p className="text-xs font-semibold ">Reply</p>
                     </div>
                     <div className="flex items-center gap-1 text-[rgba(22,24,35,0.7)]">
@@ -88,7 +102,7 @@ const CommentListWrapper = () => {
             </div>
           ))}
         </div>
-        <CommentBar postId={showComment as string} handleTriger={handleTrigger} />
+        <CommentBar imgUrl={imgUrl} postId={showComment as string} handleTriger={handleTrigger} />
       </div>
     </div>
   )

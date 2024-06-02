@@ -33,7 +33,7 @@ const PostList = ({ posts }: Props) => {
         clearInterval(intervalId)
       }
     }
-  }, [notif.isLoadingUpload])
+  }, [notif.isLoadingUpload, updateNotif])
 
   return (
     <div className="h-dvh">

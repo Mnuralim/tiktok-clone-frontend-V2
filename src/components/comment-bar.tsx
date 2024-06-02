@@ -8,10 +8,11 @@ import { customRevalidation } from '@/actions/custom-revalidation'
 
 interface Props {
   postId: string
+  imgUrl: string
   handleTriger: () => void
 }
 
-const CommentBar = ({ postId, handleTriger }: Props) => {
+const CommentBar = ({ postId, handleTriger, imgUrl }: Props) => {
   const [comment, setComment] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { data: session } = useSession()
@@ -46,11 +47,11 @@ const CommentBar = ({ postId, handleTriger }: Props) => {
   return (
     <div className="absolute bottom-0 z-10 flex items-center w-full max-w-xl gap-3 px-3 py-2 bg-white border-t ">
       <Image
-        src={'/img/google.png'}
+        src={imgUrl}
         width={35}
         height={35}
         alt="profile"
-        className="rounded-full object-fill w-[35px] h-[35px]"
+        className="rounded-full object-cover aspect-square object-center w-[35px] h-[35px]"
       />
       <form onSubmit={handleSubmit} className="relative w-full">
         <input

@@ -5,6 +5,7 @@ import { loginGoogle } from './actions/auth/login-google'
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
+    maxAge: 3 * 24 * 60 * 60,
   },
   providers: [Google],
   callbacks: {
@@ -16,6 +17,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const data = await resParsed.data
           token.accessToken = data.accesToken
           user.id = data.id
+          token.username = data.username
         }
       }
       return { ...token, ...user }
@@ -24,6 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.accessToken) {
         session.user.accessToken = token.accessToken as string
         session.user.id = token.id as string
+        session.user.username = token.username as string
       }
       return session
     },
