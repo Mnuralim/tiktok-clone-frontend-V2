@@ -19,6 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const response = await loginGoogle(account.id_token as string)
         if (response.ok) {
           const resParsed = await response.json()
+          console.log(resParsed)
           const data = await resParsed.data
           token.accessToken = data.accesToken
           user.id = data.id
