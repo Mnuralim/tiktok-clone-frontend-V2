@@ -21,6 +21,12 @@ const Tab = () => {
     replace(`${pathname}/?${params.toString()}`)
   }
 
+  useEffect(() => {
+    if (!activeTab) {
+      replace(`${pathname}/?tab=post`)
+    }
+  }, [activeTab, replace, pathname])
+
   return (
     <div className="transform transition-all duration-500 ease-linear sticky top-0 z-50 bg-white">
       <div className="flex items-center justify-between border px-16 mt-3">
