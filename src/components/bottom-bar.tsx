@@ -34,11 +34,11 @@ const BottomBar = () => {
             : 'bg-white border-t border-t-[#A4A4A4] border-opacity-45'
         }`}
       >
-        <Link className="flex flex-col items-center" href={'/'}>
+        <Link className="flex flex-col items-center" href={'/'} scroll={false} prefetch={false}>
           {pathName === '/' ? <RiHome4Fill size={24} color="white" /> : <RiHome4Line size={24} />}
           <span className="text-[10px]">Home</span>
         </Link>
-        <Link className="flex flex-col items-center" href={'/discover'}>
+        <Link className="flex flex-col items-center" href={'/discover'} scroll={false} prefetch={false}>
           {pathName === '/discover' ? (
             <>
               <RiCompass3Fill size={24} />
@@ -51,10 +51,10 @@ const BottomBar = () => {
             </>
           )}
         </Link>
-        <Link href={'/add-post'} className="flex items-center">
+        <Link href={'/add-post'} scroll={false} prefetch={false} className="flex items-center">
           <BiSolidMessageSquareAdd size={24} />
         </Link>
-        <Link className="flex flex-col items-center" href={'/inbox'}>
+        <Link className="flex flex-col items-center" href={'/inbox'} scroll={false} prefetch={false}>
           {pathName === '/inbox' ? (
             <>
               <PiChatCenteredTextFill size={24} />
@@ -67,8 +67,13 @@ const BottomBar = () => {
             </>
           )}
         </Link>
-        <Link className="flex flex-col items-center" href={`/user/${session?.user.username}`}>
-          {pathName === `/user/${session?.user.username}` ? (
+        <Link
+          className="flex flex-col items-center"
+          href={`/user/${session?.user.username}?tab=post`}
+          scroll={false}
+          prefetch={false}
+        >
+          {pathName.startsWith(`/user/${session?.user.username}`) ? (
             <>
               <BsFillPersonFill size={24} />
               <span className="text-[10px] font-semibold">Profile</span>

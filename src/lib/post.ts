@@ -6,13 +6,16 @@ export const getAllPosts = async () => {
       cache: 'no-store',
     })
     const data = await response.json()
-    if (response.ok) {
-      const posts: IPost[] = data.data
-      return posts
+    if (!response.ok) {
+      throw new Error(data.message)
     }
-    return []
+    const posts: IPost[] = data.data
+    return posts
   } catch (error) {
-    throw new Error('Something wrong')
+    if (error instanceof Error) {
+      throw new Error(error.message)
+    }
+    throw new Error('Internal server error')
   }
 }
 
@@ -22,11 +25,15 @@ export const getPostById = async (id: string) => {
       cache: 'no-store',
     })
     const data = await response.json()
-    if (response.ok) {
-      const post: IPost = data.data
-      return post
+    if (response.status === 500) {
+      throw new Error(data.message)
     }
+    const post: IPost | undefined = data.data
+    return post
   } catch (error) {
-    throw new Error('Something wrong')
+    if (error instanceof Error) {
+      throw new Error(error.message)
+    }
+    throw new Error('Internal server error')
   }
 }

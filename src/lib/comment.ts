@@ -9,12 +9,15 @@ export const getAllPostComments = async (postId: string, accessToken: string) =>
       },
     })
     const data = await response.json()
-    if (response.ok) {
-      const comments: IComment[] = data.data
-      return comments
+    if (!response.ok) {
+      throw new Error(data.message)
     }
-    return []
-  } catch (error) {
-    throw new Error('Something wrong')
+    const comments: IComment[] = data.data
+    return comments
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message)
+    }
+    throw new Error('Internal server error')
   }
 }

@@ -9,12 +9,12 @@ export const getAllUsers = async (q?: string) => {
       cache: 'no-store',
     })
     const data = await response.json()
-    if (response.ok) {
-      const users: Iuser[] = data.data
-      return users
+    if (!response.ok) {
+      throw new Error(data.message)
     }
 
-    return []
+    const users: Iuser[] = data.data
+    return users
   } catch (error) {
     throw new Error('Something wrong')
   }
@@ -29,11 +29,15 @@ export const getUserByUsername = async (username: string, accessToken: string) =
       },
     })
     const data = await response.json()
-    if (response.ok) {
-      const user: Iuser = data.data
-      return user
+    if (response.status === 500 || response.status === 401) {
+      throw new Error(data.message)
     }
+    const user: Iuser = data.data
+    return user
   } catch (error) {
-    throw new Error('Something wrong')
+    if (error instanceof Error) {
+      throw new Error(error.message)
+    }
+    throw new Error('Internal server error')
   }
 }
