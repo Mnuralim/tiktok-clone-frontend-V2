@@ -1,7 +1,7 @@
 'use client'
 import { customRevalidation } from '@/actions/custom-revalidation'
 import { useSession } from 'next-auth/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface Props {
   currentUserId: string
@@ -12,9 +12,14 @@ interface Props {
 
 const FollowButton = ({ currentUserId, user, height, width }: Props) => {
   const { data: session } = useSession()
-  const isFollow = user.followers.find((u) => u.followerId === currentUserId)
+  const [isFollow, setIsFollow] = useState<boolean>(() => user.followers.some((u) => u.followerId === currentUserId))
+
+  useEffect(() => {
+    setIsFollow(user.followers.some((u) => u.followerId === currentUserId))
+  }, [user.followers, currentUserId])
 
   const handleFollowUser = async () => {
+    setIsFollow((prev) => !prev)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/follow/${user.id}`, {
         method: 'PATCH',
@@ -27,6 +32,7 @@ const FollowButton = ({ currentUserId, user, height, width }: Props) => {
         customRevalidation('/search')
       }
     } catch (error) {
+      setIsFollow(isFollow)
       alert('Internal server error')
     }
   }

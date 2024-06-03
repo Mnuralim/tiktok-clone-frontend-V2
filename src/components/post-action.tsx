@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaHeart } from '@react-icons/all-files/fa/FaHeart'
 import { FaBookmark } from 'react-icons/fa'
 import Link from 'next/link'
@@ -19,10 +19,22 @@ const PostAction = ({ post, isVideoPlaying }: Props) => {
   const pathName = usePathname()
   const { data: session } = useSession()
   const currentUser = session?.user
-  const alreadyLike = post.likes.find((p) => p.userId === currentUser?.id)
-  const alreadySaved = post.savedBy.find((p) => p.userId === currentUser?.id)
+  const [isLiked, setIsLiked] = useState<boolean>(post.likes.some((p) => p.userId === currentUser?.id))
+  const [likesCount, setLikesCount] = useState<number>(post._count.likes)
+  const [savedCount, setSavedCount] = useState<number>(post._count.likes)
+  const [isSaved, setIsSaved] = useState<boolean>(post.savedBy.some((p) => p.userId === currentUser?.id))
+
+  useEffect(() => {
+    setIsLiked(post.likes.some((p) => p.userId === currentUser?.id))
+    setLikesCount(post._count.likes)
+    setSavedCount(post._count.savedBy)
+    setIsSaved(post.savedBy.some((p) => p.userId === currentUser?.id))
+  }, [post, currentUser])
 
   const handleLike = async () => {
+    setIsLiked((prev) => !prev)
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1)
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/likes`, {
         method: 'PATCH',
@@ -40,11 +52,15 @@ const PostAction = ({ post, isVideoPlaying }: Props) => {
       }
       customRevalidation('/')
     } catch (error) {
+      setIsLiked((prev) => !prev)
+      setLikesCount(isLiked ? likesCount + 1 : likesCount - 1)
       alert('Internal server error')
     }
   }
 
   const handleSavePost = async () => {
+    setIsSaved((prev) => !prev)
+    setSavedCount(isSaved ? savedCount - 1 : savedCount + 1)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/save/${post.id}`, {
         method: 'PATCH',
@@ -59,6 +75,8 @@ const PostAction = ({ post, isVideoPlaying }: Props) => {
       }
       customRevalidation('/')
     } catch (error) {
+      setIsSaved((prev) => !prev)
+      setSavedCount(isSaved ? savedCount + 1 : savedCount - 1)
       alert('Internal server error')
     }
   }
@@ -82,8 +100,8 @@ const PostAction = ({ post, isVideoPlaying }: Props) => {
         />
       </Link>
       <button onClick={handleLike} className="flex flex-col items-center cursor-pointer">
-        <FaHeart size="28" color={`${alreadyLike ? '#FE2C55' : 'white'}`} />
-        <span className="text-sm font-semibold text-white">{post._count.likes}</span>
+        <FaHeart size="28" color={`${isLiked ? '#FE2C55' : 'white'}`} />
+        <span className="text-sm font-semibold text-white">{likesCount}</span>
       </button>
       <div className="flex flex-col items-center">
         <button onClick={() => push(`${pathName}/?comment=${post.id}`)} id="comment-btn">
@@ -93,7 +111,7 @@ const PostAction = ({ post, isVideoPlaying }: Props) => {
       </div>
       <div className="flex flex-col items-center">
         <button onClick={handleSavePost}>
-          <FaBookmark size="28" color={alreadySaved ? '#FACE15' : 'white'} />
+          <FaBookmark size="28" color={isSaved ? '#FACE15' : 'white'} />
         </button>
         <span className="text-sm font-semibold text-white">{post._count.savedBy}</span>
       </div>
