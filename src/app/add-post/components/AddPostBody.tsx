@@ -39,7 +39,7 @@ const AddPostBody = ({ locations }: Props) => {
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
 
-    if (file && file.size <= 4000000) {
+    if (file && file.size <= 2000000) {
       setIsChooseVideo(true)
       setVideoPost(file)
     } else {
@@ -51,7 +51,7 @@ const AddPostBody = ({ locations }: Props) => {
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file && file.size <= 1000000) {
+    if (file && file.size <= 2000000) {
       setThummbnail(file)
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -109,6 +109,8 @@ const AddPostBody = ({ locations }: Props) => {
           thumbnail: '',
           message: 'Successfully uploaded your video!',
         })
+      } else {
+        throw new Error()
       }
     } catch (error) {
       updateNotif({
