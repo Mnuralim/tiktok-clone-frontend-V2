@@ -1,8 +1,9 @@
 import { auth } from '@/auth'
 import { getAllUsers } from '@/lib/user'
-import React from 'react'
+import React, { Suspense } from 'react'
 import SearchHeader from './components/search-header'
 import SearchBody from './components/search-body'
+import LoadUserData from './components/load-user-data'
 
 interface Props {
   searchParams: {
@@ -18,7 +19,9 @@ const Page = async ({ searchParams }: Props) => {
   return (
     <section className="px-3 bg-white h-dvh">
       <SearchHeader />
-      <SearchBody users={users} currentUserId={session?.user.id as string} />
+      <Suspense fallback={<LoadUserData />}>
+        <SearchBody users={users} currentUserId={session?.user.id as string} />
+      </Suspense>
     </section>
   )
 }

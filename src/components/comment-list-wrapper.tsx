@@ -9,11 +9,13 @@ import CommentBar from './comment-bar'
 import { getUserByUsername } from '@/lib/user'
 import CalcTime from './calc-time'
 import { parseToDate } from '@/utils/parse-to-date'
+import { LuLoader } from 'react-icons/lu'
 
 const CommentListWrapper = () => {
   const [comments, setComments] = useState<IComment[]>([])
   const [trigger, setTrigger] = useState<boolean>(false)
   const [imgUrl, setImgUrl] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(true)
   const { data: session } = useSession()
   const searchParams = useSearchParams()
   const { back } = useRouter()
@@ -28,20 +30,25 @@ const CommentListWrapper = () => {
     const controller = new AbortController()
     if (showComment && session && session.user && session.user.accessToken) {
       const fetchData = async () => {
-        const [comments, user] = await Promise.all([
-          await getAllPostComments(showComment, session.user.accessToken as string),
-          await getUserByUsername(session.user.username as string, session.user.accessToken),
-        ])
+        try {
+          const [comments, user] = await Promise.all([
+            await getAllPostComments(showComment, session.user.accessToken as string),
+            await getUserByUsername(session.user.username as string, session.user.accessToken),
+          ])
 
-        if (user) {
-          setImgUrl(user.profilePicUrl)
+          if (user) {
+            setImgUrl(user.profilePicUrl)
+          }
+          setComments(comments)
+          setLoading(false)
+        } catch (error) {
+          console.error('Failed to fetch comments:', error)
+          setLoading(false)
         }
-        setComments(comments)
       }
 
       fetchData()
     }
-
     return () => controller.abort()
   }, [showComment, session?.user.accessToken, trigger, session])
 
@@ -69,38 +76,46 @@ const CommentListWrapper = () => {
             <AiOutlineClose />
           </button>
         </div>
-        <div className="flex flex-col gap-5 px-3 mt-8 mb-24">
-          {comments.map((comment) => (
-            <div key={comment.id}>
-              <div className="flex items-start gap-2">
-                <Image
-                  src={comment.user.profilePicUrl}
-                  width={35}
-                  height={35}
-                  alt="profile"
-                  className="rounded-full object-cover object-center aspect-square w-[35px] h-[35px]"
-                />
-                <div className="w-full">
-                  <h2 className="text-xs font-semibold text-[rgba(22,24,35,0.7)]">{comment.user.username}</h2>
-                  <p>{comment.commentText}</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <div className="flex gap-3 items-center text-[rgba(22,24,35,0.7)]">
-                      <div className="text-xs">
-                        <CalcTime createdAt={parseToDate(comment.createdAt)} />
+        <div>
+          {loading ? (
+            <div className="flex justify-center mt-5">
+              <LuLoader className="animate-spin" color="black" size={35} />
+            </div>
+          ) : (
+            <div className="flex flex-col gap-5 px-3 mt-8 mb-24">
+              {comments.map((comment) => (
+                <div key={comment.id}>
+                  <div className="flex items-start gap-2">
+                    <Image
+                      src={comment.user.profilePicUrl}
+                      width={35}
+                      height={35}
+                      alt="profile"
+                      className="rounded-full object-cover object-center aspect-square w-[35px] h-[35px]"
+                    />
+                    <div className="w-full">
+                      <h2 className="text-xs font-semibold text-[rgba(22,24,35,0.7)]">{comment.user.username}</h2>
+                      <p>{comment.commentText}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <div className="flex gap-3 items-center text-[rgba(22,24,35,0.7)]">
+                          <div className="text-xs">
+                            <CalcTime createdAt={parseToDate(comment.createdAt)} />
+                          </div>
+                          <p className="text-xs font-semibold ">Reply</p>
+                        </div>
+                        <div className="flex items-center gap-1 text-[rgba(22,24,35,0.7)]">
+                          <button>
+                            <AiOutlineHeart />
+                          </button>
+                          <p className="text-xs">20</p>
+                        </div>
                       </div>
-                      <p className="text-xs font-semibold ">Reply</p>
-                    </div>
-                    <div className="flex items-center gap-1 text-[rgba(22,24,35,0.7)]">
-                      <button>
-                        <AiOutlineHeart />
-                      </button>
-                      <p className="text-xs">20</p>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
         <CommentBar imgUrl={imgUrl} postId={showComment as string} handleTriger={handleTrigger} />
       </div>
