@@ -4,11 +4,18 @@ import Opening from '@/components/opening'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
+interface Props {
+  searchParams: {
+    post: string
+  }
+}
+
+export default async function Home({ searchParams }: Props) {
+  const query = searchParams.post || ''
   return (
     <section className="bg-black">
       <Suspense fallback={<Opening />}>
-        <HomePage />
+        <HomePage query={query} />
       </Suspense>
     </section>
   )

@@ -1,9 +1,12 @@
 const API_URL = process.env.API_URL
 
-export const getAllPosts = async () => {
+export const getAllPosts = async (token: string, query: string) => {
   try {
-    const response = await fetch(`${API_URL}/posts`, {
+    const response = await fetch(`${API_URL}/posts?q=${query}`, {
       cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     const data = await response.json()
     if (!response.ok) {
@@ -19,10 +22,13 @@ export const getAllPosts = async () => {
   }
 }
 
-export const getPostById = async (id: string) => {
+export const getPostById = async (id: string, token: string) => {
   try {
     const response = await fetch(`${API_URL}/posts/${id}`, {
       cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     const data = await response.json()
     if (response.status === 500) {
