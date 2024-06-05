@@ -43,7 +43,7 @@ const AddPostBody = ({ locations }: Props) => {
       setIsChooseVideo(true)
       setVideoPost(file)
     } else {
-      alert('Video size should not exceed 4MB, Select another video!')
+      alert('Video size should not exceed 2MB, Select another video!')
       setIsChooseVideo(false)
       setVideoPost(null)
     }

@@ -54,3 +54,15 @@ interface Iuser {
   createdAt: string
   updatedAt: string
 }
+
+interface INotification {
+  id: string
+  userId: string
+  type: NotificationType
+  message: string
+  actorProfilePicUrl?: string
+  actorUsername?: string
+  additionalInfo?: any
+  createdAt: string
+  read: boolean
+}

@@ -58,6 +58,11 @@ const CommentListWrapper = () => {
     }
   }, [comments])
 
+  const handleCloseComment = () => {
+    back()
+    setLoading(true)
+  }
+
   return (
     <div
       className={`fixed w-full h-full bg-black bg-opacity-50 left-0 transform transition-all ease-linear duration-300 z-50 flex flex-col justify-end`}
@@ -72,7 +77,7 @@ const CommentListWrapper = () => {
           <h2 className="font-semibold">
             {comments.length} {comments.length <= 1 ? 'comment' : 'comments'}
           </h2>
-          <button onClick={back}>
+          <button onClick={handleCloseComment}>
             <AiOutlineClose />
           </button>
         </div>
