@@ -21,7 +21,8 @@ const BottomBar = () => {
     pathName === '/add-post' ||
     pathName === '/login' ||
     pathName === `/user/${params.username}/update` ||
-    pathName === '/setting'
+    pathName === '/setting' ||
+    pathName === '/inbox'
   ) {
     return null
   }

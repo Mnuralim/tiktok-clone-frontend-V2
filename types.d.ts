@@ -62,7 +62,12 @@ interface INotification {
   message: string
   actorProfilePicUrl?: string
   actorUsername?: string
-  additionalInfo?: any
+  additionalInfo?: {
+    postId?: string
+    postCover?: string
+    commentId?: string
+    user?: Iuser
+  }
   createdAt: string
   read: boolean
 }

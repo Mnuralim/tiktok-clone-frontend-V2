@@ -2,7 +2,7 @@
 import { getAllPostComments } from '@/lib/comment'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineClose, AiOutlineHeart } from 'react-icons/ai'
 import CommentBar from './comment-bar'
@@ -18,7 +18,8 @@ const CommentListWrapper = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const { data: session } = useSession()
   const searchParams = useSearchParams()
-  const { back } = useRouter()
+  const { replace } = useRouter()
+  const pathname = usePathname()
   const showComment = searchParams.get('comment')
   const scrollTopRef = useRef<HTMLDivElement>(null)
 
@@ -59,7 +60,7 @@ const CommentListWrapper = () => {
   }, [comments])
 
   const handleCloseComment = () => {
-    back()
+    replace(`${pathname}`)
     setLoading(true)
   }
 
@@ -100,7 +101,7 @@ const CommentListWrapper = () => {
                     />
                     <div className="w-full">
                       <h2 className="text-xs font-semibold text-[rgba(22,24,35,0.7)]">{comment.user.username}</h2>
-                      <p>{comment.commentText}</p>
+                      <p className="text-sm">{comment.commentText}</p>
                       <div className="flex items-center justify-between mt-1">
                         <div className="flex gap-3 items-center text-[rgba(22,24,35,0.7)]">
                           <div className="text-xs">

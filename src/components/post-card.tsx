@@ -18,7 +18,9 @@ const PostCard = ({ post }: Props) => {
       if (isPlaying) {
         vidRef.current.pause()
       } else {
-        vidRef.current.play()
+        vidRef.current.play().catch((error) => {
+          console.error('Video play interrupted:', error)
+        })
       }
       setIsPlaying(!isPlaying)
     }
@@ -34,8 +36,14 @@ const PostCard = ({ post }: Props) => {
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0]
       if (entry.isIntersecting) {
-        vidRef.current?.play()
-        setIsPlaying(true)
+        vidRef.current
+          ?.play()
+          .then(() => {
+            setIsPlaying(true)
+          })
+          .catch((error) => {
+            console.error('Video play interrupted:', error)
+          })
       } else {
         vidRef.current?.pause()
         setIsPlaying(false)

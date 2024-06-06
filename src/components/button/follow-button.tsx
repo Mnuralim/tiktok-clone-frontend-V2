@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 interface Props {
   currentUserId: string
   user: Iuser
-  width: number
+  width: number | string
   height: number
 }
 
@@ -41,10 +41,10 @@ const FollowButton = ({ currentUserId, user, height, width }: Props) => {
     <button
       onClick={handleFollowUser}
       style={{
-        width: `${width}px`,
+        width: width === 'full' ? '80%' : `${width}px`,
         height: `${height}px`,
       }}
-      className={`font-semibold rounded-lg ${
+      className={`font-semibold rounded-lg  text-sm ${
         isFollow ? 'bg-[rgba(22,24,35,0.12)] text-black' : ' text-white bg-[#FE2C55]'
       }`}
     >
