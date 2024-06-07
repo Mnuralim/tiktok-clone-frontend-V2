@@ -1,18 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from './auth'
+import { decodeToken } from './utils/decode-token'
 
 export async function middleware(req: NextRequest) {
+  if (req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
   const session = await auth()
+  const token = session?.user.accessToken
+  const baseUrl = req.nextUrl.origin
 
-  if (!session && req.nextUrl.pathname !== '/login') {
-    const newUrl = new URL('/login', req.nextUrl.origin)
-    return NextResponse.redirect(newUrl)
+  if (token) {
+    const decodedToken = decodeToken(token)
+    if (decodedToken && decodedToken.exp && decodedToken.exp * 1000 < Date.now()) {
+      return NextResponse.redirect(`${baseUrl}/login`)
+    }
+  } else {
+    return NextResponse.redirect(`${baseUrl}/login`)
   }
-
-  if (session && req.nextUrl.pathname === '/login') {
-    const newUrl = new URL('/', req.nextUrl.origin)
-    return NextResponse.redirect(newUrl)
-  }
+  return NextResponse.next()
 }
 
 export const config = {
