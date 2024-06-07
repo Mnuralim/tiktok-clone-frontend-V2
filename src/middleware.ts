@@ -10,14 +10,15 @@ export async function middleware(req: NextRequest) {
   const session = await auth()
   const token = session?.user.accessToken
   const baseUrl = req.nextUrl.origin
+  const callbackUrl = req.nextUrl.pathname
 
   if (token) {
     const decodedToken = decodeToken(token)
     if (decodedToken && decodedToken.exp && decodedToken.exp * 1000 < Date.now()) {
-      return NextResponse.redirect(`${baseUrl}/login`)
+      return NextResponse.redirect(`${baseUrl}/login?callbackUrl=${encodeURIComponent(callbackUrl)}`)
     }
   } else {
-    return NextResponse.redirect(`${baseUrl}/login`)
+    return NextResponse.redirect(`${baseUrl}/login?callbackUrl=${encodeURIComponent(callbackUrl)}`)
   }
   return NextResponse.next()
 }
