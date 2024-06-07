@@ -76,8 +76,8 @@ const AddPostBody = ({ locations }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!videoPost || !thumbnail) {
-      alert('Video post and Cover are required!')
+    if (!videoPost || !thumbnail || !location) {
+      alert('Video post, Cover, and location are required!')
       return
     }
 

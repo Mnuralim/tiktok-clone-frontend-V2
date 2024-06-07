@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { BsPlay } from 'react-icons/bs'
@@ -6,16 +5,19 @@ import { BsPlay } from 'react-icons/bs'
 interface Props {
   posts: IPost[]
   username: string
+  currentUsername: string
 }
 
-const Post = ({ posts, username }: Props) => {
+const Post = ({ posts, username, currentUsername }: Props) => {
   if (!posts.length) {
     return (
       <div className="flex items-center justify-center flex-col w-full h-fit mt-24 gap-2">
         <p className="font-semibold">No post available</p>
-        <Link href={'/add-post'} className="bg-[#FE2C55] text-white font-semibold py-0.5 text-sm px-4 rounded-sm">
-          Mulai
-        </Link>
+        {username === currentUsername ? (
+          <Link href={'/add-post'} className="bg-[#FE2C55] text-white text-xs font-semibold py-1 px-5 rounded-sm">
+            Mulai
+          </Link>
+        ) : null}
       </div>
     )
   }

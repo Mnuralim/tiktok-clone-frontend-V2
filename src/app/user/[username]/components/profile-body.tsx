@@ -7,9 +7,10 @@ import Link from 'next/link'
 interface Props {
   user: Iuser
   session: Session
+  baseUrl: string
 }
 
-const ProfileBody = ({ user, session }: Props) => {
+const ProfileBody = ({ user, session, baseUrl }: Props) => {
   return (
     <div className="flex flex-col items-center gap-3 mt-5 overflow-y-auto">
       <Image
@@ -45,14 +46,18 @@ const ProfileBody = ({ user, session }: Props) => {
             >
               Edit profile
             </Link>
-            <button className={`font-semibold rounded-lg bg-[rgba(22,24,35,0.12)] px-4 h-10 text-black`}>
+            <Link
+              href={`https://wa.me/?text=${encodeURIComponent(
+                `Check out this TikTok profile: ${baseUrl}/user/${user.username}?tab=like`
+              )}`}
+              className={`font-semibold rounded-lg bg-[rgba(22,24,35,0.12)] flex items-center justify-center  px-4 h-10 text-black`}
+            >
               Bagikan profile
-            </button>
+            </Link>
           </>
         )}
       </div>
-
-      <p className="text-sm font-medium">{user.bio}oke</p>
+      <p className="text-sm font-medium">{user.bio}</p>
     </div>
   )
 }
